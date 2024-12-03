@@ -1,0 +1,44 @@
+[
+    {
+        "id": 19,
+        "name": "Dildara x Love Me Like ",
+        "singer": "Og peoples",
+        "image": "/images/DildaraxLoveMeLikeYouDoJAZScapeMashup.jpg",
+        "song": "/songs/DildaraxLoveMeLikeYouDoJAZScapeMashup.mp3"
+    },
+    {
+        "id": 20,
+        "name": "Illahi x Night Changes ",
+        "singer": "Og peoples",
+        "image": "/images/IllahixNightChangesGraveroMashupfullversionfullaudiosong.jpg",
+        "song": "/songs/IllahixNightChangesGraveroMashupfullversionfullaudiosong.mp3"
+    },
+    {
+        "id": 21,
+        "name": "Spirits x Jhoom Ja ",
+        "singer": "Again Og peoples",
+        "image": "/images/SpiritsxJhoomJAZScapeMashupAliZafarTheStrumbellasChillVibes.jpg",
+        "song": "/songs/SpiritsxJhoomJAZScapeMashupAliZafarTheStrumbellasChillVibes.mp3"
+    },
+    {
+        "id": 22,
+        "name": "Uff X What Makes You ",
+        "singer": "Singer Placeholder",
+        "image": "/images/UffXWhatMakesYouBeautifulMashuprevibeBollywoodXOneDirectionInstaReelsTikTok.jpg",
+        "song": "/songs/UffXWhatMakesYouBeautifulMashuprevibeBollywoodXOneDirectionInstaReelsTikTok.mp3"
+    },
+    {
+        "id": 23,
+        "name": "Ye runway x ore Piya",
+        "singer": "Mantra Bhai",
+        "image": "/images/YerunwayxorePiya.png",
+        "song": "/songs/YerunwayxorePiya.mp3"
+    },
+    {
+        "id": 24,
+        "name": "Ye arcade x kaise hua",
+        "singer": "Mantra Bhai",
+        "image": "/images/Yearcadexkaisehua.jpg",
+        "song": "/songs/Yearcadexkaisehua.mp3"
+    }
+]

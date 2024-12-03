@@ -1,0 +1,44 @@
+[
+    {
+        "id": 25,
+        "name": "Faded",
+        "singer": "AlanWalker",
+        "image": "/images/AlanWalker-Faded.jpg",
+        "song": "/songs/AlanWalker-Faded.mp3"
+    },
+    {
+        "id": 26,
+        "name": "Peaches ",
+        "singer": "Justin Bieber",
+        "image": "/images/JustinBieberPeachesftDanielCaesarGiveon.jpg",
+        "song": "/songs/JustinBieberPeachesftDanielCaesarGiveon.mp3"
+    },
+    {
+        "id": 27,
+        "name": "A man without love",
+        "singer": "Moonk night",
+        "image": "/images/MoonknightAmanwithoutlove.jpg",
+        "song": "/songs/y2mate.com-MoonknightAmanwithoutlove.mp3"
+    },
+    {
+        "id": 28,
+        "name": "lonely",
+        "singer": "Singer Placeholder",
+        "image": "/images/lonely.jpg",
+        "song": "/songs/lonely.mp3"
+    },
+    {
+        "id": 29,
+        "name": "All MyFriends Are Toxic",
+        "singer": "Boy with Uke",
+        "image": "/images/AllMyFriendsAreToxic(PagalWorld).jpg",
+        "song": "/songs/AllMyFriendsAreToxic(PagalWorld).mp3"
+    },
+    {
+        "id": 30,
+        "name": "Devil Eyes",
+        "singer": "Hippie Sabotage ",
+        "image": "/images/HippieSabotageDevilEyes.jpg",
+        "song": "/songs/HippieSabotageDevilEyes.mp3"
+    }
+]

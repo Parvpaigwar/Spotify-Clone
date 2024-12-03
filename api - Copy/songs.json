@@ -1,0 +1,44 @@
+[
+    {
+        "id": 1,
+        "name": "Night Changes",
+        "singer": "One Direction",
+        "image": "/images/Nightchanges.jpg",
+        "song": "/songs/Nightchanges.mp3"
+    },
+    {
+        "id": 2,
+        "name": "Dekha Hazaro Dafaa",
+        "singer": "Arijit Singh ",
+        "image": "/images/DekhaHazaroDafaa.jpg",
+        "song": "/songs/DekhaHazaroDafaa.mp3"
+    },
+    {
+        "id": 3,
+        "name": "Shape of You",
+        "singer": "Ed Sheeran",
+        "image": "/images/shapeofyou.jpg",
+        "song": "/songs/shapeofyou.mp3"
+    },
+    {
+        "id": 4,
+        "name": "Ek Ladki ko Dekha To",
+        "singer": "Darshan Raval",
+        "image": "/images/EkLadkikoDekhatohAisaLaga.jpg",
+        "song": "/songs/EkLadkikoDekhatohAisaLaga.mp3"
+    },
+    {
+        "id": 5,
+        "name": "Memories ",
+        "singer": "Maroon 5 ",
+        "image": "/images/Memories.jpg",
+        "song": "/songs/Memories.mp3"
+    },
+    {
+        "id": 6,
+        "name": "Sach Keh Raha Hai",
+        "singer": "Og KK",
+        "image": "/images/SachKehRahaHaiDeewanalofiremix.jpg",
+        "song": "/songs/SachKehRahaHaiDeewanalofiremix.mp3"
+    }
+]

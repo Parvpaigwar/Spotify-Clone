@@ -1,0 +1,44 @@
+[
+    {
+        "id": 7,
+        "name": "19-Thrift-Shop",
+        "singer": "wtf",
+        "image": "/images/19-Thrift-Shop.png",
+        "song": "/songs/19-Thrift-Shop.mp3"
+    },
+    {
+        "id": 8,
+        "name": "Believer",
+        "singer": "Imagine Dragons",
+        "image": "/images/Believer.jpg",
+        "song": "/songs/Believer.mp3"
+    },
+    {
+        "id": 9,
+        "name": "Perfect",
+        "singer": "Ed Sheeran",
+        "image": "/images/Perfect.jpg",
+        "song": "/songs/Perfect.mp3"
+    },
+    {
+        "id": 10,
+        "name": "pastlives",
+        "singer": "Singer Placeholder",
+        "image": "/images/pastlives.jpg",
+        "song": "/songs/pastlives.mp3"
+    },
+    {
+        "id": 11,
+        "name": "Bella Ciao",
+        "singer": "Moscow",
+        "image": "/images/Bellaciao.jpg",
+        "song": "/songs/BellaCiao.mp3"
+    },
+    {
+        "id": 12,
+        "name": "Heat Waves",
+        "singer": "Glass Animals",
+        "image": "/images/Heatwaves.jpg",
+        "song": "/songs/Heatwaves.mp3"
+    }
+]
