@@ -1,7 +1,8 @@
 # Spotify Clone 🎧
 
 Welcome to **Parv's Spotify Clone**, a full-fledged, interactive music streaming platform built from scratch using **HTML**, **CSS**, and **JavaScript**. This project replicates the functionality and design of Spotify while incorporating my personal enhancements and creative touch.
-## [Live ](https://hakistore.netlify.app/)  
+## [Live ](https://parvspotify.netlify.app/) 
+
 
 ## 🌟 Project Overview
 
