@@ -166,13 +166,6 @@ Here are some potential upgrades to take this project to the next level:
 
 ---
 
-## 📸 Screenshots
-
-| Home Page                      | Music Player                   | Playlist View                  |
-|--------------------------------|--------------------------------|--------------------------------|
-| ![Home Page](link_to_image)    | ![Music Player](link_to_image) | ![Playlist View](link_to_image) |
-
----
 
 ## 🧑‍💻 About the Developer
 
