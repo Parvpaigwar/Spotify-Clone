@@ -109,6 +109,10 @@ This repo must ALWAYS use the **Parvpaigwar** GitHub account (`parvpaigwar@gmail
 - Lyrics: no skull markers on lines any more (user: only the glow/fill). Rope + dangling skeleton redrawn in one cartoon style (ink outline + flat fill, twist marks, knot).
 - Greeting is always "Good night" with the tagline "The dead walk at night, so for us it's good morning" (time-of-day greeting removed). Search placeholder: "Dig up a song, an artist, some old bones…".
 
+## 2026-11-12 batch 4
+- Lyrics version matching (lyrics.js): LRCLIB often has several cuts of a song with different timings (e.g. "Shape of You" 234s vs 263s; the local file is 263s). `fetchLyrics` returns all versions with `duration`; `choose()` waits for the playing song's length and uses the synced version within 3s of it. No close match → plain lyrics without highlight (better than highlighting the wrong line).
+- Now Playing pills never wrap: source pill ("Your library" / "30s preview") left, ride pill right.
+
 ## Desktop layout (2026-11-11, modelled on the current Spotify desktop app)
 - `.App` grid: top bar (logo, back/forward, home button, search pill `.App__search-form`, user) / "Your Library" panel (`.App__nav-bar`, chips + list) + rounded main view (`.App__main-view`) / player bar. Font: Figtree. Colours are CSS variables on `:root` in `style.css`.
 - Search input lives in the top bar; results (`#searchResults`) render at the top of the main view, which scrolls to top on search.

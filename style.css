@@ -1388,7 +1388,8 @@ body[data-mood="hellfire"] { --mood-accent: #ff5a1f; --mood-glow: rgba(255, 90, 
 /* Vibe pill under the song (click = next vibe) */
 .App__now-pills {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* the ride pill always sits to the right of the source pill */
+  white-space: nowrap;
   gap: 6px;
   margin-top: 12px;
 }

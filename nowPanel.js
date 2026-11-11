@@ -8,8 +8,8 @@ const sourceEl = document.querySelector("#nowSource");
 
 const SOURCES = {
     youtube: ["fa-brands fa-youtube", "Full song from YouTube"],
-    preview: ["fa-brands fa-apple", "30-second preview from iTunes"],
-    library: ["fa-solid fa-bone", "From your Marrow library"],
+    preview: ["fa-brands fa-apple", "30s preview"],
+    library: ["fa-solid fa-bone", "Your library"],
 };
 
 // song: an entry from songsLS ({ songName, songSinger, songImage })

@@ -38,9 +38,16 @@ const parseLrc = (lrc) => {
     return lines.sort((a, b) => a.t - b.t);
 };
 
-const toResult = (d) =>
+// One version of a song's lyrics. `duration` (seconds) tells the versions apart: the same song often
+// exists as a single, an album cut, a deluxe cut… and their timings differ.
+const toVersion = (d) =>
     d && (d.syncedLyrics || d.plainLyrics || d.instrumental)
-        ? { synced: d.syncedLyrics ? parseLrc(d.syncedLyrics) : null, plain: d.plainLyrics || null, instrumental: !!d.instrumental }
+        ? {
+              synced: d.syncedLyrics ? parseLrc(d.syncedLyrics) : null,
+              plain: d.plainLyrics || null,
+              instrumental: !!d.instrumental,
+              duration: Number(d.duration) || 0,
+          }
         : null;
 
 const getJson = async (url) => {
@@ -50,21 +57,51 @@ const getJson = async (url) => {
     return res.json();
 };
 
-const pickBest = (list) => list?.find((d) => d.syncedLyrics) || list?.find((d) => d.plainLyrics) || null;
-
+// All versions LRCLIB has for this song
 const fetchLyrics = async (name, singer) => {
     const track = cleanTitle(name);
     const artist = firstArtist(singer);
     const q = (params) => new URLSearchParams(params).toString();
 
-    // 1. exact match, 2. search by track + artist, 3. free-text search
-    const exact = await getJson(`${API}/get?${q({ track_name: track, artist_name: artist })}`);
-    if (toResult(exact)) return toResult(exact);
-    const byFields = await getJson(`${API}/search?${q({ track_name: track, artist_name: artist })}`);
-    if (pickBest(byFields)) return toResult(pickBest(byFields));
-    const byText = await getJson(`${API}/search?${q({ q: `${track} ${artist}` })}`);
-    return toResult(pickBest(byText));
+    const [exact, byFields] = await Promise.all([
+        getJson(`${API}/get?${q({ track_name: track, artist_name: artist })}`).catch(() => null),
+        getJson(`${API}/search?${q({ track_name: track, artist_name: artist })}`),
+    ]);
+    let versions = [exact, ...(byFields || [])].map(toVersion).filter(Boolean);
+    if (versions.length === 0) {
+        const byText = await getJson(`${API}/search?${q({ q: `${track} ${artist}` })}`);
+        versions = (byText || []).map(toVersion).filter(Boolean);
+    }
+    return versions;
 };
+
+// Timings only fit if the lyrics were made for a recording of the same length as the one playing
+const MAX_DIFF = 3; // seconds
+const choose = (versions, actual) => {
+    const closest = (list) => [...list].sort((x, y) => Math.abs(x.duration - actual) - Math.abs(y.duration - actual))[0];
+    const synced = versions.filter((v) => v.synced?.length);
+    if (wantSynced && synced.length) {
+        if (!actual) return { lyrics: synced[0], sync: true }; // length unknown: best guess
+        const best = closest(synced);
+        if (Math.abs(best.duration - actual) <= MAX_DIFF) return { lyrics: best, sync: true };
+    }
+    const withText = versions.filter((v) => v.plain || v.synced?.length);
+    if (withText.length) return { lyrics: actual ? closest(withText) : withText[0], sync: false };
+    return null;
+};
+
+// The playing song's length, once the player knows it (0 if it never arrives)
+const songDuration = (myToken) =>
+    new Promise((resolve) => {
+        const started = Date.now();
+        const check = () => {
+            if (myToken !== token) return resolve(0);
+            if (duration > 0) return resolve(duration);
+            if (Date.now() - started > 10000) return resolve(0);
+            setTimeout(check, 200);
+        };
+        check();
+    });
 
 // ---------- rendering ----------
 const showMessage = (kind, title, text) => {
@@ -75,11 +112,11 @@ const showMessage = (kind, title, text) => {
     body.querySelector(".App__lyrics-text").textContent = text;
 };
 
-const render = (lyrics) => {
+const render = (lyrics, sync = wantSynced) => {
     body.className = "App__lyrics-body";
     body.textContent = "";
     activeIndex = -1;
-    const synced = wantSynced && lyrics.synced?.length > 0;
+    const synced = sync && lyrics.synced?.length > 0;
 
     const lines = synced
         ? lyrics.synced
@@ -120,13 +157,15 @@ export const showLyrics = async (song, { synced = true } = {}) => {
         }));
     }
     try {
-        const lyrics = await cache.get(key);
+        const versions = await cache.get(key);
         if (myToken !== token) return;
-        if (!lyrics) return showMessage("none", "No lyrics for this one", "The skeleton is just vibing along. Enjoy the music.");
-        if (lyrics.instrumental && !lyrics.plain && !lyrics.synced) {
-            return showMessage("none", "Instrumental", "No words, just bones and beats.");
-        }
-        render(lyrics);
+        if (versions.length === 0) return showMessage("none", "No lyrics for this one", "The skeleton is just vibing along. Enjoy the music.");
+        // Pick the version made for a recording of this length; no close match = plain lyrics, no highlight
+        const actual = wantSynced ? await songDuration(myToken) : 0;
+        if (myToken !== token) return;
+        const picked = choose(versions, actual);
+        if (!picked) return showMessage("none", "Instrumental", "No words, just bones and beats.");
+        render(picked.lyrics, picked.sync);
     } catch (error) {
         if (myToken !== token) return;
         console.warn("Lyrics failed:", error.message);
