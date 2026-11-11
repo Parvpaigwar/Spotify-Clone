@@ -17,17 +17,69 @@ const itunesToSong = (r) => ({
     genre: r.primaryGenreName,
 });
 
-const getJson = async (url, signal) => {
-    const res = await fetch(url, { signal });
-    if (!res.ok) throw new Error(`${new URL(url).host} error ${res.status}`);
-    return res.json();
+// ---------- iTunes Search ----------
+// Two things to cope with:
+//  - Apple sometimes answers a search with a redirect to its Music app ("musics://…"), which a web page
+//    can't follow. `redirect: "manual"` lets us notice that and ask again with differently-worded
+//    parameters (same results, different URL), which usually gets a normal answer.
+//  - Apple allows only ~20 requests a minute per visitor. Results are kept in localStorage for 6 hours,
+//    so reloading the page or repeating a search doesn't ask again.
+const CACHE_KEY = "itunesCacheLS";
+const CACHE_HOURS = 6;
+const CACHE_MAX = 40; // queries kept
+
+const readCache = () => {
+    try {
+        return JSON.parse(localStorage.getItem(CACHE_KEY)) || {};
+    } catch {
+        return {};
+    }
+};
+const writeCache = (cache) => {
+    const newest = Object.entries(cache).sort((a, b) => b[1].at - a[1].at).slice(0, CACHE_MAX);
+    try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(Object.fromEntries(newest)));
+    } catch {
+        localStorage.removeItem(CACHE_KEY); // storage full: start over
+    }
 };
 
-// iTunes allows only ~20 requests per minute per user, so keep calls few
+const itunesUrls = (query, limit) => {
+    const base = { term: query, limit: String(limit), country: ITUNES_COUNTRY };
+    return [
+        { ...base, media: "music", entity: "song" },
+        { ...base, entity: "song" },
+        { ...base, entity: "musicTrack", lang: "en_us" },
+    ].map((params) => `https://itunes.apple.com/search?${new URLSearchParams(params)}`);
+};
+
 export const searchItunes = async (query, limit, signal) => {
-    const { results = [] } = await getJson(
-        `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&entity=song&limit=${limit}&country=${ITUNES_COUNTRY}`,
-        signal
-    );
-    return results.filter((r) => r.previewUrl).map(itunesToSong);
+    const key = `${query.trim().toLowerCase()}|${limit}`;
+    const cache = readCache();
+    const hit = cache[key];
+    if (hit && Date.now() - hit.at < CACHE_HOURS * 3600 * 1000) return hit.songs.map(itunesToSong);
+
+    let lastError = new Error("iTunes search failed");
+    for (const url of itunesUrls(query, limit)) {
+        try {
+            const res = await fetch(url, { signal, redirect: "manual" });
+            if (res.type === "opaqueredirect") throw new Error("iTunes redirected to the Music app");
+            if (!res.ok) throw new Error(`iTunes error ${res.status}`);
+            const { results = [] } = await res.json();
+            const songs = results.filter((r) => r.previewUrl && r.trackId);
+            // keep only the fields itunesToSong needs
+            const slim = songs.map(({ trackId, trackName, artistName, artworkUrl100, previewUrl, primaryGenreName }) => ({
+                trackId, trackName, artistName, artworkUrl100, previewUrl, primaryGenreName,
+            }));
+            const latest = readCache();
+            latest[key] = { at: Date.now(), songs: slim };
+            writeCache(latest);
+            return slim.map(itunesToSong);
+        } catch (error) {
+            if (error.name === "AbortError") throw error;
+            lastError = error; // try the next wording
+        }
+    }
+    if (hit) return hit.songs.map(itunesToSong); // out of date is better than nothing
+    throw lastError;
 };

@@ -113,6 +113,9 @@ This repo must ALWAYS use the **Parvpaigwar** GitHub account (`parvpaigwar@gmail
 - Lyrics version matching (lyrics.js): LRCLIB often has several cuts of a song with different timings (e.g. "Shape of You" 234s vs 263s; the local file is 263s). `fetchLyrics` returns all versions with `duration`; `choose()` waits for the playing song's length and uses the synced version within 3s of it. No close match → plain lyrics without highlight (better than highlighting the wrong line).
 - Now Playing pills never wrap: source pill ("Your library" / "30s preview") left, ride pill right.
 
+## iTunes "musics://" redirect (2026-11-12)
+- On the live site Apple sometimes answered `itunes.apple.com/search` with a redirect to `musics://…` (shows as a CORS error; could not be reproduced with curl). `searchItunes` (onlineSongs.js) now fetches with `redirect: "manual"`, retries with two other parameter wordings, caches results in localStorage `itunesCacheLS` for 6 hours (max 40 queries), and falls back to an expired cache entry if all attempts fail.
+
 ## Desktop layout (2026-11-11, modelled on the current Spotify desktop app)
 - `.App` grid: top bar (logo, back/forward, home button, search pill `.App__search-form`, user) / "Your Library" panel (`.App__nav-bar`, chips + list) + rounded main view (`.App__main-view`) / player bar. Font: Figtree. Colours are CSS variables on `:root` in `style.css`.
 - Search input lives in the top bar; results (`#searchResults`) render at the top of the main view, which scrolls to top on search.
