@@ -1,23 +1,30 @@
 import { getSongsFromLS } from "./getSongsFromLS";
+import { imageUrl, songUrl } from "./media";
 
-export const saveData = (id) => {
-    let cursong = document.querySelector(`#song${id}`);    
+// Stores a song in localStorage (songsLS) so playSong / likes / history can find it.
+// `song` is { id, name, singer, image, song } — the same shape as api/*.json.
+// Local IDs are numbers; search results use strings like "itunes:123".
+export const saveSong = ({ id, name, singer, image, song, youtubeQuery, genre, mood }) => {
+    const arrLocalStoragesong = getSongsFromLS();
+    const songdata = {
+        id,
+        songName: name,
+        songImage: imageUrl(image),
+        songSinger: singer,
+        songAudio: songUrl(song),
+    };
+    // iTunes results: text used to find the full song on YouTube
+    if (youtubeQuery) songdata.youtubeQuery = youtubeQuery;
+    // Used to pick the song's vibe scene (moods.js)
+    if (genre) songdata.genre = genre;
+    if (mood) songdata.mood = mood;
 
-    let arrLocalStoragesong = getSongsFromLS();
-
-    let songName = cursong.querySelector("#songName").innerText;
-    let songImage = cursong.querySelector(".songImage").src;
-    let songSinger = cursong.querySelector("#songSinger").innerText;
-    let songAudio = cursong.querySelector("#songAudio source").src;
-
-    let songdata = {id,songName,songImage, songSinger,songAudio};
-
-
-    let existingsong = arrLocalStoragesong.find((currsong) => currsong.id === id);
-    if(!existingsong){
+    // Replace any stored copy so URL changes (e.g. switching to Cloudinary) take effect
+    const index = arrLocalStoragesong.findIndex((currsong) => String(currsong.id) === String(id));
+    if (index === -1) {
         arrLocalStoragesong.push(songdata);
+    } else {
+        arrLocalStoragesong[index] = songdata;
     }
-    localStorage.setItem('songsLS',JSON.stringify(arrLocalStoragesong));
-
-
+    localStorage.setItem('songsLS', JSON.stringify(arrLocalStoragesong));
 };

@@ -1,12 +1,4 @@
-export const pauseButton = (audioPlayer) => {
+import { toggle } from "./player";
 
-    let audio = document.getElementById(audioPlayer.id);
-    if (audio.paused) {
-        document.querySelector("#runPauseButton").setAttribute("class", "fa-solid fa-pause");        
-        audio.play();
-    } else {
-        audio.pause();
-        document.querySelector("#runPauseButton").setAttribute("class", "fa-solid fa-play");
-    }
-}
-
+// Play/pause for whichever player is active. The icon follows onPlayStateChange (main.js).
+export const pauseButton = () => toggle();

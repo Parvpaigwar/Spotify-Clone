@@ -1,7 +1,8 @@
+import { FALLBACK_IMAGE, imageUrl } from "./media";
+import { clearQueue } from "./playQueue";
 import { playSong } from "./playSong";
-import { saveData } from "./savedata";
+import { saveSong } from "./saveData";
 
-const songContainer = document.querySelector("#songContainer");
 const songTemplate = document.querySelector("#songTemplate");
 
 function shuffleArray(array) {
@@ -9,136 +10,56 @@ function shuffleArray(array) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]]; // Swap elements
     }
-}  
+}
 
+// Build one song card from the template. Clicking it saves + plays the song.
+// `song` is { id, name, singer, image, song, badge?, youtubeQuery? }.
+export const createSongCard = (song) => {
+    const fragment = document.importNode(songTemplate.content, true);
+    const card = fragment.querySelector(".App__section-grid-item");
+    card.dataset.songId = String(song.id);
+    card.querySelector(".songName").textContent = song.name;
+    card.querySelector(".songSinger").textContent = song.singer;
+    const img = card.querySelector(".songImage");
+    img.src = imageUrl(song.image);
+    img.alt = song.name;
+    img.loading = "lazy";
+    // Broken cover link (happens with some search results): show a placeholder instead
+    img.addEventListener("error", () => { img.src = FALLBACK_IMAGE; }, { once: true });
 
-// ,songs3,songs4,songs5,songs6,songs7,songs8,songs9,songs10
-export const homeSongsCards = (songs,songs2,songs3,songs4,songs5) => {
-    if(!songs){
-        return false;
+    if (song.badge) {
+        const badge = document.createElement("span");
+        badge.className = "songBadge";
+        badge.textContent = song.badge;
+        card.append(badge);
     }
 
+    card.addEventListener("click", () => {
+        clearQueue(); // picking a song by hand ends any playlist queue
+        saveSong(song);
+        playSong(song.id);
+    });
+    return card;
+};
+
+// Shuffle a list and render it into a container. `mood`: the row's vibe (see moods.js)
+const renderSongs = (songs, containerSelector, mood) => {
+    const songContainer = document.querySelector(containerSelector);
     shuffleArray(songs);
-    shuffleArray(songs2);
-    shuffleArray(songs3);
-    shuffleArray(songs4);
-    shuffleArray(songs5);
-    // shuffleArray(songs6);
-    // shuffleArray(songs7);
-    // shuffleArray(songs8);
-    // shuffleArray(songs9);
-    // shuffleArray(songs10);
-
-
-    songs.forEach(element => {
-        const {id ,name,singer,image ,song} = element;
-
-        const songClone = document.importNode(songTemplate.content,true);
-        // # we copy the template as a clone now we just fill the values and append it
-        songClone.querySelector("#songValue").setAttribute("id", `song${id}`);
-        songClone.querySelector("#songName").textContent = name; // same as innertext
-        songClone.querySelector(".songImage").src = image;
-        songClone.querySelector(".songImage").alt = name;
-        songClone.querySelector("#songSinger").textContent = singer;
-        songClone.querySelector("#songAudio source").src = song;
-
-
-        songClone.querySelector(".App__section-grid-item").addEventListener("click",(event) =>{
-            
-            playSong(id);
-        });
-        songContainer.append(songClone);
-        saveData(id);
-
+    songs.forEach((rowSong) => {
+        const song = { ...rowSong, mood };
+        songContainer.append(createSongCard(song));
+        saveSong(song); // so liked songs / startup song work before any click
     });
+};
 
-
-
-    songs2.forEach(element => {
-        const {id ,name,singer,image ,song} = element;
-
-        const songClone = document.importNode(songTemplate.content,true);
-        const songContainer = document.querySelector("#songContainersecond");
-        // # we copy the template as a clone now we just fill the values and append it
-        songClone.querySelector("#songValue").setAttribute("id", `song${id}`);
-        songClone.querySelector("#songName").textContent = name; // same as innertext
-        songClone.querySelector(".songImage").src = image;
-        songClone.querySelector(".songImage").alt = name;
-        songClone.querySelector("#songSinger").textContent = singer;
-        songClone.querySelector("#songAudio source").src = song;
-
-
-        songClone.querySelector(".App__section-grid-item").addEventListener("click",(event) =>{
-            
-            playSong(id);
-        });
-        songContainer.append(songClone);
-        saveData(id);
-
-    });
-
-    songs3.forEach(element => {
-        const {id ,name,singer,image ,song} = element;
-        const songContainer = document.querySelector("#songContainerThird");
-        const songClone = document.importNode(songTemplate.content,true);
-        // # we copy the template as a clone now we just fill the values and append it
-        songClone.querySelector("#songValue").setAttribute("id", `song${id}`);
-        songClone.querySelector("#songName").textContent = name; // same as innertext
-        songClone.querySelector(".songImage").src = image;
-        songClone.querySelector(".songImage").alt = name;
-        songClone.querySelector("#songSinger").textContent = singer;
-        songClone.querySelector("#songAudio source").src = song;
-
-
-        songClone.querySelector(".App__section-grid-item").addEventListener("click",(event) =>{
-            
-            playSong(id);
-        });
-        songContainer.append(songClone);
-        saveData(id);
-
-    });
-    songs4.forEach(element => {
-        const {id ,name,singer,image ,song} = element;
-        const songContainer = document.querySelector("#songContainerFourth");
-        const songClone = document.importNode(songTemplate.content,true);
-        // # we copy the template as a clone now we just fill the values and append it
-        songClone.querySelector("#songValue").setAttribute("id", `song${id}`);
-        songClone.querySelector("#songName").textContent = name; // same as innertext
-        songClone.querySelector(".songImage").src = image;
-        songClone.querySelector(".songImage").alt = name;
-        songClone.querySelector("#songSinger").textContent = singer;
-        songClone.querySelector("#songAudio source").src = song;
-
-
-        songClone.querySelector(".App__section-grid-item").addEventListener("click",(event) =>{
-            
-            playSong(id);
-        });
-        songContainer.append(songClone);
-        saveData(id);
-
-    });
-    songs5.forEach(element => {
-        const {id ,name,singer,image ,song} = element;
-        const songContainer = document.querySelector("#songContainerFivth");
-        const songClone = document.importNode(songTemplate.content,true);
-        // # we copy the template as a clone now we just fill the values and append it
-        songClone.querySelector("#songValue").setAttribute("id", `song${id}`);
-        songClone.querySelector("#songName").textContent = name; // same as innertext
-        songClone.querySelector(".songImage").src = image;
-        songClone.querySelector(".songImage").alt = name;
-        songClone.querySelector("#songSinger").textContent = singer;
-        songClone.querySelector("#songAudio source").src = song;
-
-
-        songClone.querySelector(".App__section-grid-item").addEventListener("click",(event) =>{
-            
-            playSong(id);
-        });
-        songContainer.append(songClone);
-        saveData(id);
-
-    });
-    
+export const homeSongsCards = (songs, songs2, songs3, songs4, songs5) => {
+    if (!songs) {
+        return false;
+    }
+    renderSongs(songs, "#songContainer", "drive");
+    renderSongs(songs2, "#songContainersecond", "party");
+    renderSongs(songs3, "#songContainerThird", "moonlit");
+    renderSongs(songs4, "#songContainerFourth", "rain");
+    renderSongs(songs5, "#songContainerFivth", "drive");
 };
