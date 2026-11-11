@@ -4,7 +4,7 @@ import { imageUrl, songUrl } from "./media";
 // Stores a song in localStorage (songsLS) so playSong / likes / history can find it.
 // `song` is { id, name, singer, image, song } — the same shape as api/*.json.
 // Local IDs are numbers; search results use strings like "itunes:123".
-export const saveSong = ({ id, name, singer, image, song, youtubeQuery, genre, mood }) => {
+export const saveSong = ({ id, name, singer, image, song, youtubeQuery, genre, mood, duration }) => {
     const arrLocalStoragesong = getSongsFromLS();
     const songdata = {
         id,
@@ -18,6 +18,8 @@ export const saveSong = ({ id, name, singer, image, song, youtubeQuery, genre, m
     // Used to pick the song's vibe scene (moods.js)
     if (genre) songdata.genre = genre;
     if (mood) songdata.mood = mood;
+    // Official track length (seconds): used to pick a YouTube video of the same length (youtube.js)
+    if (duration) songdata.duration = duration;
 
     // Replace any stored copy so URL changes (e.g. switching to Cloudinary) take effect
     const index = arrLocalStoragesong.findIndex((currsong) => String(currsong.id) === String(id));

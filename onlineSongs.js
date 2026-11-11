@@ -15,6 +15,7 @@ const itunesToSong = (r) => ({
     badge: youtubeEnabled ? "Full song · YouTube" : "30s preview",
     youtubeQuery: `${r.trackName} ${r.artistName}`,
     genre: r.primaryGenreName,
+    duration: r.trackTimeMillis ? Math.round(r.trackTimeMillis / 1000) : undefined, // official track length, seconds
 });
 
 // ---------- iTunes Search ----------
@@ -24,7 +25,7 @@ const itunesToSong = (r) => ({
 //    parameters (same results, different URL), which usually gets a normal answer.
 //  - Apple allows only ~20 requests a minute per visitor. Results are kept in localStorage for 6 hours,
 //    so reloading the page or repeating a search doesn't ask again.
-const CACHE_KEY = "itunesCacheLS";
+const CACHE_KEY = "itunesCacheLS2"; // v2: entries include the track length
 const CACHE_HOURS = 6;
 const CACHE_MAX = 40; // queries kept
 
@@ -68,8 +69,8 @@ export const searchItunes = async (query, limit, signal) => {
             const { results = [] } = await res.json();
             const songs = results.filter((r) => r.previewUrl && r.trackId);
             // keep only the fields itunesToSong needs
-            const slim = songs.map(({ trackId, trackName, artistName, artworkUrl100, previewUrl, primaryGenreName }) => ({
-                trackId, trackName, artistName, artworkUrl100, previewUrl, primaryGenreName,
+            const slim = songs.map(({ trackId, trackName, artistName, artworkUrl100, previewUrl, primaryGenreName, trackTimeMillis }) => ({
+                trackId, trackName, artistName, artworkUrl100, previewUrl, primaryGenreName, trackTimeMillis,
             }));
             const latest = readCache();
             latest[key] = { at: Date.now(), songs: slim };
